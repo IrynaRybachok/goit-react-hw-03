@@ -1,10 +1,11 @@
 import Contact from "../Contact/Contact";
 import { nanoid } from 'nanoid'
+import s from './ContactList.module.css'
 const ContactList = ({ dataListContact, onDelete }) =>{
     return (
-        <ul>
+        <ul className={s.contactList}>
             {dataListContact.map(data =>(
-                <li key={nanoid()}>
+                <li className={s.contactItem} key={nanoid()}>
                     <Contact
                         data={data}
                         onDelete={onDelete}

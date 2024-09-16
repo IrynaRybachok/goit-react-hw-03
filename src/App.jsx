@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import ContactForm from './components/ContactForm/ContactForm'
 import ContactList from './components/ContactList/ContactList'
-import SearchBox from './components/SearchBox/SearchBox'
+import SearchBox from './components/SearchBox/SearchBox';
+import { PiAddressBookTabsLight } from "react-icons/pi";
 
 
 function App() {
@@ -14,7 +15,14 @@ function App() {
   ]
   
   const [searchBox, setSearchBox] = useState('');
-  const [contacts, setContacts] = useState(contactData);
+  const [contacts, setContacts] = useState(()=>{
+    const savedContacts = window.localStorage.getItem("saved-contact");
+    return savedContacts ? JSON.parse(savedContacts) : contactData;
+  });
+
+  useEffect(()=>{
+    window.localStorage.setItem("saved-contact", JSON.stringify(contacts))
+  }, [contacts])
 
   const addContact = (newContact) => {
     setContacts(prev => {
@@ -32,10 +40,16 @@ function App() {
 
   return (
     <>
-      <h1 className = "title">Phonebook</h1>
-      <ContactForm onAdd={addContact}/>
-      <SearchBox value={searchBox} onFilter={setSearchBox} />
-      <ContactList dataListContact={filterContactList} onDelete={deleteContact}/>
+      <div className='containerPhonebook'>
+        <h1 className = "title">Phonebook <PiAddressBookTabsLight size='30' /></h1>
+        <ContactForm onAdd={addContact}/>
+        <SearchBox value={searchBox} onFilter={setSearchBox} />
+        <ContactList dataListContact={filterContactList} onDelete={deleteContact}/>
+        {/* {contacts.length !== 0 ? (
+          <ContactList dataListContact={filterContactList} onDelete={deleteContact}/>
+          ) : (<p className={s.infoText}>Your phonebook is empty</p>)} */}
+          
+      </div>
     </>
   )
 }
